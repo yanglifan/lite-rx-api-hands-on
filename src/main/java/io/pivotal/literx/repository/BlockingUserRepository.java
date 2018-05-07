@@ -3,7 +3,7 @@ package io.pivotal.literx.repository;
 import io.pivotal.literx.domain.User;
 import reactor.core.publisher.Mono;
 
-public class BlockingUserRepository implements BlockingRepository<User>{
+public class BlockingUserRepository implements BlockingRepository<User> {
 
 	private final ReactiveRepository<User> reactiveRepository;
 
@@ -29,6 +29,7 @@ public class BlockingUserRepository implements BlockingRepository<User>{
 	@Override
 	public void save(User user) {
 		callCount++;
+		System.out.println(Thread.currentThread().getName() + ":: save(User user)");
 		reactiveRepository.save(Mono.just(user)).block();
 	}
 
@@ -40,6 +41,7 @@ public class BlockingUserRepository implements BlockingRepository<User>{
 
 	@Override
 	public Iterable<User> findAll() {
+		System.out.println(Thread.currentThread().getName() + " :: findAll()");
 		callCount++;
 		return reactiveRepository.findAll().toIterable();
 	}

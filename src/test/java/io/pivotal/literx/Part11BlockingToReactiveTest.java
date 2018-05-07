@@ -12,6 +12,7 @@ import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -39,10 +40,21 @@ public class Part11BlockingToReactiveTest {
 	public void slowPublisherFastSubscriber() {
 		BlockingUserRepository repository = new BlockingUserRepository();
 		Flux<User> flux = workshop.blockingRepositoryToFlux(repository);
-		assertEquals("The call to findAll must be deferred until the flux is subscribed", 0, repository.getCallCount());
+		assertEquals("The call to findAll must be deferred until the flux is subscribed", 0,
+				repository.getCallCount());
 		StepVerifier.create(flux)
-				.expectNext(User.SKYLER, User.JESSE, User.WALTER, User.SAUL)
+				.expectNextMatches(predicateWithThreadName(User.SKYLER))
+				.expectNextMatches(predicateWithThreadName(User.JESSE))
+				.expectNextMatches(predicateWithThreadName(User.WALTER))
+				.expectNextMatches(predicateWithThreadName(User.SAUL))
 				.verifyComplete();
+	}
+
+	private Predicate<User> predicateWithThreadName(User expectUser) {
+		return (User u) -> {
+			System.out.println(Thread.currentThread().getName() + " :: doNext -> " + u.getUsername());
+			return expectUser.equals(u);
+		};
 	}
 
 	//========================================================================================
