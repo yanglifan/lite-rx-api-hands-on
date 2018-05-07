@@ -1,7 +1,5 @@
 package io.pivotal.literx;
 
-import java.util.Iterator;
-
 import io.pivotal.literx.domain.User;
 import io.pivotal.literx.repository.BlockingUserRepository;
 import io.pivotal.literx.repository.ReactiveRepository;
@@ -13,16 +11,18 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 /**
  * Learn how to call blocking code from Reactive one with adapted concurrency strategy for
  * blocking code that produces or receives data.
- *
+ * <p>
  * For those who know RxJava:
- *  - RxJava subscribeOn = Reactor subscribeOn
- *  - RxJava observeOn = Reactor publishOn
+ * - RxJava subscribeOn = Reactor subscribeOn
+ * - RxJava observeOn = Reactor publishOn
  *
  * @author Sebastien Deleuze
  * @see Flux#subscribeOn(Scheduler)
@@ -33,7 +33,7 @@ public class Part11BlockingToReactiveTest {
 
 	Part11BlockingToReactive workshop = new Part11BlockingToReactive();
 
-//========================================================================================
+	//========================================================================================
 
 	@Test
 	public void slowPublisherFastSubscriber() {
@@ -45,7 +45,7 @@ public class Part11BlockingToReactiveTest {
 				.verifyComplete();
 	}
 
-//========================================================================================
+	//========================================================================================
 
 	@Test
 	public void fastPublisherSlowSubscriber() {
@@ -62,5 +62,4 @@ public class Part11BlockingToReactiveTest {
 		assertEquals(User.SAUL, it.next());
 		assertFalse(it.hasNext());
 	}
-
 }
