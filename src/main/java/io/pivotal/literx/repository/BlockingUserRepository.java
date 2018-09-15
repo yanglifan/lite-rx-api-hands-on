@@ -1,8 +1,10 @@
 package io.pivotal.literx.repository;
 
 import io.pivotal.literx.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 public class BlockingUserRepository implements BlockingRepository<User>{
 
 	private final ReactiveRepository<User> reactiveRepository;
@@ -40,6 +42,7 @@ public class BlockingUserRepository implements BlockingRepository<User>{
 
 	@Override
 	public Iterable<User> findAll() {
+		log.info("Run in {}", Thread.currentThread().getName());
 		callCount++;
 		return reactiveRepository.findAll().toIterable();
 	}
